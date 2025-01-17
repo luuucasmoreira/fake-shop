@@ -91,7 +91,7 @@ aws eks update-kubeconfig --name <nome-do-cluster>
    - **Role**: `eks-worker` (a role que você criou anteriormente)
    
 3. Selecione o tipo de instância e a quantidade de escala:
-   - Tipo de instância: **t2.micro** (você pode escolher outra conforme necessário)
+   - Tipo de instância: **t3.medium** (você pode escolher outra conforme necessário, se for menor que essa o eks vai ter problemas para subir)
    - Instância **SPOT** para melhorar a precificação
    - Quantidade de instâncias: **2,2,2** (isso definirá a escala automática)
 
