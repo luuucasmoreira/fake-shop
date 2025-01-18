@@ -32,7 +32,8 @@ jobs:
           tags: | # Utilizar para colocar mais de 1 tag
             luuucasmoreia/fake-shop:latest
             luuucasmoreia/fake-shop:v${{ github.run_number }}
-          #essa espressão deixa a numeração da versão como auto-increment            
+          #essa espressão deixa a numeração da versão como auto-increment   
+                   
 
   cd:
     runs-on: ubuntu-24.04
