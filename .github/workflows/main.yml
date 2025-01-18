@@ -6,7 +6,7 @@ on:
   workflow_dispatch: #posso executar na mão
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Obter o código do projeto
         uses: actions/checkout@v4
@@ -20,8 +20,22 @@ jobs:
       - name: Construção da Imagem Docker
         run: echo "Executando o comando docker push"
 
+#O certo é depois da construção fazer uma verificação
+#de vulnerabilidade primeiro, mas nesse passo não está fazendo
+      -
+        name: Construção da Imagem Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: ./src
+          push: true
+          file: ./src/Dockerfile
+          tags: | # Utilizar para colocar mais de 1 tag
+            luuucasmoreia/fake-shop:latest
+            luuucasmoreia/fake-shop:v${{ github.run_number }}
+          #essa espressão deixa a numeração da versão como auto-increment            
+
   cd:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [ci] #dependendo do ci completar primeiro
     steps:
       - name: Autenticar na AWS
