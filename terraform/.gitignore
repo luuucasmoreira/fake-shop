@@ -1,0 +1,23 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform/
+.terraform.lock.hcl
+
+# Diretórios de backup
+**/backup/
+**/bak/
+**/tmp/
+
+# Arquivos de log
+*.log
+
+# Arquivos de configuração locais
+terraform.tfvars
