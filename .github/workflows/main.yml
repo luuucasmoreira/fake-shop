@@ -50,7 +50,7 @@ jobs:
           aws-region: us-east-1
       
       - name: Configurar o kubectl
-        run: aws eks update-kubeconfig --name fake-shop
+        run: aws eks update-kubeconfig --name aula-k8s
         
       - name: configurar o kubeconfig
         run: echo "Executando o comando aws eks update-kubeconfig"
