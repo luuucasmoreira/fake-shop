@@ -56,10 +56,21 @@ jobs:
       - name: Configurar o kubectl
         run: aws eks update-kubeconfig --name aula-k8s
       
-      - name: Deploy dos manifestos no kubernetes
-        uses: Azure/k8s-deploy@v5
+      # - name: Deploy dos manifestos no kubernetes
+      #   uses: Azure/k8s-deploy@v5
+      #   with:
+      #     manifests: |
+      #       ./k8s/deployment.yaml
+      #     images: |
+      #       luuucasmoreia/fake-shop:v${{ github.run_number }}
+
+      - name: Deploy to AWS EKS
+        uses: giovannirossini/aws-eks@v2.0.0
         with:
-          manifests: |
-            ./k8s/deployment.yaml
-          images: |
-            luuucasmoreia/fake-shop:v${{ github.run_number }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+          cluster-name: "aula-k8s"
+          kubectl-version: "1.27"
+          command: |
+            kubectl apply -f k8s/deployment.yaml
