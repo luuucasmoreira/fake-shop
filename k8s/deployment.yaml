@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
       - name: fakeshop
-        image: luuucasmoreia/fake-shop:v1
+        image: luuucasmoreia/fake-shop:latest
         ports:
           - containerPort: 5000
         env:
@@ -78,4 +78,6 @@ spec:
   ports:
     - port: 80
       targetPort: 5000
-  type: LoadBalancer
+      nodePort: 30001
+  type: NodePort
+#colocado nodeport para que exponha no github action
