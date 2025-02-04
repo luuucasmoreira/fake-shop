@@ -79,5 +79,5 @@ spec:
     - port: 80
       targetPort: 5000
       nodePort: 30001
-  type: LoadBalancer
+  type: NodePort
 #colocado nodeport para que exponha no github action

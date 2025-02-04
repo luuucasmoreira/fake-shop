@@ -60,7 +60,20 @@ jobs:
         id: minikube-ip
         run: |
           echo "IP=$(minikube ip)" >> $GITHUB_ENV
+
+      - name: Instalar ngrok #para expor o serviço no github action
+        run: |
+          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && \
+          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
+          sudo apt-get update && sudo apt-get install ngrok
   
+      - name: Expor serviço via ngrok
+        id: expose-ngrok
+        run: |
+          nohup ngrok http $(minikube ip):30000 &
+          sleep 5
+          echo "NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')" >> $GITHUB_ENV
+      
       - name: Print Access Info
         run: |
           echo "Aplicação disponível em: http://${{ env.IP }}:30000"
