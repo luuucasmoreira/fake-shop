@@ -2,7 +2,7 @@ name: CI-CD
 
 on:
   push:
-    branches: ["main"]
+    branches: ["k8s-local"]
   workflow_dispatch: #posso executar na mão
 jobs:
   ci:
@@ -22,16 +22,16 @@ jobs:
 
 #O certo é depois da construção fazer uma verificação
 #de vulnerabilidade primeiro, mas nesse passo não está fazendo
-      -
-        name: Construção da Imagem Docker
-        uses: docker/build-push-action@v6
-        with:
-          context: ./src
-          push: true
-          file: ./src/Dockerfile
-          tags: | # Utilizar para colocar mais de 1 tag
-            luuucasmoreia/fake-shop:latest
-            luuucasmoreia/fake-shop:v${{ github.run_number }}
+      # -
+      #   name: Construção da Imagem Docker
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     context: ./src
+      #     push: true
+      #     file: ./src/Dockerfile
+      #     tags: | # Utilizar para colocar mais de 1 tag
+      #       luuucasmoreia/fake-shop:latest
+      #       luuucasmoreia/fake-shop:v${{ github.run_number }}
           #essa espressão deixa a numeração da versão como auto-increment   
                    
 
@@ -46,31 +46,12 @@ jobs:
       - name: Obter o código do projeto
         uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+      - name: Set up Minikube
+        run: |
+          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          sudo install minikube-linux-amd64 /usr/local/bin/minikube
+          minikube start
       
-      - name: Configurar o kubectl
-        run: aws eks update-kubeconfig --name aula-k8s
-      
-      # - name: Deploy dos manifestos no kubernetes
-      #   uses: Azure/k8s-deploy@v5
-      #   with:
-      #     manifests: |
-      #       ./k8s/deployment.yaml
-      #     images: |
-      #       luuucasmoreia/fake-shop:v${{ github.run_number }}
-
-      - name: Deploy to AWS EKS
-        uses: giovannirossini/aws-eks@v2.0.0
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "us-east-1"
-          cluster-name: "aula-k8s"
-          kubectl-version: "1.27"
-          command: |
-            kubectl apply -f k8s/deployment.yaml
+      - name: Deploy to Minikube
+        run: |
+          kubectl apply -f k8s/deployment.yaml
