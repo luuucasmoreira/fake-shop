@@ -59,11 +59,11 @@ jobs:
       - name: Get Minikube IP
         id: minikube-ip
         run: |
-          echo "::set-output name=IP::$(minikube ip)"
+          echo "IP=$(minikube ip)" >> $GITHUB_ENV
   
       - name: Print Access Info
         run: |
-          echo "Aplicação disponível em: http://${{ steps.minikube-ip.outputs.IP }}:30000"
+          echo "Aplicação disponível em: http://${{ env.IP }}:30000"
           echo "O job será finalizado em 5 minutos. Acesse a aplicação agora!"
 
       - name: Delay for 5 minutes
