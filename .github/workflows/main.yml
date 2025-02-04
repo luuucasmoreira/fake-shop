@@ -60,20 +60,24 @@ jobs:
         id: minikube-ip
         run: |
           echo "IP=$(minikube ip)" >> $GITHUB_ENV
+    
+      - name: Expor serviço via LoadBalancer
+        id: expose-loadbalancer
+        run: |
+          minikube tunnel &
+          sleep 5  # Esperar o tunnel inicializar
+          echo "LOADBALANCER_IP=$(kubectl get svc fake-shop-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> $GITHUB_ENV
 
-      - name: Instalar ngrok #para expor o serviço no github action
+      - name: Print Access Info
         run: |
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && \
-          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
-          sudo apt-get update && sudo apt-get install ngrok
-  
-      - name: Expor serviço via ngrok
-        id: expose-ngrok
+          echo "Aplicação disponível em: http://${{ env.LOADBALANCER_IP }}"
+          echo "O job será finalizado em 5 minutos. Acesse a aplicação agora!"
+
+      - name: Delay for 5 minutes
         run: |
-          nohup ngrok http $(minikube ip):30000 &
-          sleep 5
-          echo "NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')" >> $GITHUB_ENV
-      
+          sleep 
+
+
       - name: Print Access Info
         run: |
           echo "Aplicação disponível em: http://${{ env.IP }}:30000"
