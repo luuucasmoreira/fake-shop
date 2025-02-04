@@ -66,7 +66,7 @@ jobs:
         run: |
           minikube tunnel &
           sleep 5  # Esperar o tunnel inicializar
-          echo "LOADBALANCER_IP=$(kubectl get svc fake-shop-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> $GITHUB_ENV
+          echo "LOADBALANCER_IP=$(kubectl get svc fakeshop -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> $GITHUB_ENV
 
       - name: Print Access Info
         run: |
